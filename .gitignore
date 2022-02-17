@@ -466,12 +466,12 @@ cython_debug/
 #.idea/
 
 ### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+.vscode
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
+# !.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/
@@ -488,3 +488,4 @@ cython_debug/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,python,latex
 
+mcm-competition-2022.code-workspace
