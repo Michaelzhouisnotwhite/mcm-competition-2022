@@ -15,7 +15,7 @@ def ema_today(n):
 
     alpha = 2 / (n + 1)
     for idx in range(1, price_table.shape[0]):
-        ema_today[idx] = price_table[idx]*alpha - ema_today[idx - 1] * (1 - alpha)
+        ema_today[idx] = price_table[idx]*alpha + ema_today[idx - 1] * (1 - alpha)
     return ema_today
 
 
@@ -35,5 +35,11 @@ macd = (dif() - dea()) * 2
 # %%
 gen_data['gold_macd'] = macd[:, 0]
 gen_data['bit_macd'] = macd[:, 1]
+gen_data['gold_dif'] = dif()[:, 0]
+gen_data['bit_dif'] = dif()[:, 1]
+gen_data['gold_dea'] = dea()[:, 0]
+gen_data['bit_dea'] = dea()[:, 1]
 # %%
 gen_data.to_csv("../general_table.csv", index=False)
+
+# %%
