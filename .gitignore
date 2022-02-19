@@ -491,3 +491,5 @@ cython_debug/
 mcm-competition-2022.code-workspace
 
 .idea
+cht
+*.tmp

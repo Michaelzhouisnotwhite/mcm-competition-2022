@@ -3,36 +3,37 @@ import pandas as pd
 import numpy as np
 
 # %%
-gold_data = pd.read_csv("./LBMA-GOLD.csv")
-print(gold_data.columns)
+gen_table = pd.read_csv('../general_table.csv')
 
+# %%
+price_table = gen_table[gen_table.columns[1:3]].copy(deep=True)
+gold_price = price_table[price_table.columns[0]].copy(deep=True)
+bit_price = price_table[price_table.columns[1]].copy(deep=True)
 # %%
 
 
-def get_present_quantile(idx):
-    present_data = gold_data.iloc[idx, :]
-    previous_data = gold_data.iloc[: idx + 1, :]
-    asce_data = previous_data.sort_values(by=[gold_data.columns[1]],
-                                          ascending=True).reset_index(drop=True).copy(deep=True)
-    quantile = asce_data[asce_data['Date'] == present_data.values[0]].index / idx
-    return quantile
+def get_quantiles(table: pd.Series):
+    res_values = np.zeros_like(table.values)
+    for i in range(table.index.stop):
+        present = table.iloc[i]
+        previous = table.iloc[:i + 1].copy(deep=True).drop_duplicates().reset_index(drop=True)
+        sorted = previous.sort_values(ascending=True).reset_index(drop=False)
+        sorted_index = sorted[sorted[table.name] == present].index
+        old_index = sorted[sorted[table.name] == present]['index']
 
+        quantile = (sorted_index) / (old_index)
+
+        res_values[i] = quantile
+
+    return res_values
+
+
+res_df = pd.DataFrame(np.array([get_quantiles(gold_price), get_quantiles(bit_price)]).reshape(
+    (gold_price.shape[0], 2)), columns=['gold_quantile', 'bit_quantile'])
 
 # %%
-res = []
-for idx in range(gold_data.index.stop):
-    quantile = get_present_quantile(idx)
-    res.append(quantile)
-
+gen_table[res_df.columns[0]] = res_df[res_df.columns[0]]
+gen_table[res_df.columns[1]] = res_df[res_df.columns[1]]
 # %%
-
-res_df = pd.DataFrame(np.concatenate((gold_data.iloc[:, 0].values.reshape(
-    gold_data.iloc[:, 0].values.shape[0], 1), np.array(res)), axis=1), columns=gold_data.columns)
+gen_table.to_csv("../general_table_quantile.csv", index=False)
 # %%
-res_df.to_csv('quantile_value.csv', index=False)
-# with pd.ExcelWriter("./quantile_value.xlsx") as f:
-#     res_df.to_excel(f, index=False)
-
-# # %%
-# with pd.ExcelWriter("./LBMA-GOLD.xlsx") as f:
-#     gold_data.to_excel(f, index=False)
