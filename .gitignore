@@ -494,3 +494,6 @@ mcm-competition-2022.code-workspace
 cht
 *.tmp
 ~$*.xlsx
+competition-code/03 核心.ipynb
+
+competition-code/02 预测介绍.ipynb
