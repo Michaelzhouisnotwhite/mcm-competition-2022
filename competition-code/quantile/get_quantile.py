@@ -9,6 +9,11 @@ gen_table = pd.read_csv('../general_table.csv')
 price_table = gen_table[gen_table.columns[1:3]].copy(deep=True)
 gold_price = price_table[price_table.columns[0]].copy(deep=True)
 bit_price = price_table[price_table.columns[1]].copy(deep=True)
+
+gold_price.plot()
+plt.show()
+bit_price.plot()
+plt.show()
 # %%
 
 
@@ -25,12 +30,22 @@ def get_quantiles(table: pd.Series):
 
         res_values[i] = quantile
 
-    return res_values
+    return res_values.copy()
 
+q1 = get_quantiles(gold_price)
+q2 = get_quantiles(bit_price)
 
 # %%
-res_df = pd.DataFrame(np.array([get_quantiles(gold_price), get_quantiles(bit_price)]).reshape(
+res_df = pd.DataFrame(np.array([q1, q2]).reshape(
     (gold_price.shape[0], 2)), columns=['gold_quantile', 'bit_quantile'])
+import pylab as plt
+plt.figure()
+res_df['gold_quantile'].plot()
+plt.show()
+res_df['bit_quantile'].plot()
+plt.show()
+# %%
+
 
 # %%
 gen_table[res_df.columns[0]] = res_df[res_df.columns[0]]
